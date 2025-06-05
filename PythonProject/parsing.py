@@ -10,7 +10,7 @@ def collect_user_rates(user_login):
         url = f'https://letterboxd.com/{user_login}/films/diary/page/{page_num}/'
         response = requests.get(url)
         if response.status_code != 200:
-            # Если страница не найдена или есть ошибка, прерываем цикл
+            
             break
         html_content = response.text
         soup = BeautifulSoup(html_content, 'lxml')
@@ -35,7 +35,7 @@ def collect_user_rates(user_login):
             rating_span = td_rating_rating_green.find('span', class_='rating') if td_rating_rating_green else None
             classes = rating_span.get('class', []) if rating_span else []
 
-            # Предполагается, что класс содержит что-то вроде 'rating-4'
+            
             rating_class = classes[1] if len(classes) > 1 else ''
             rating_parts = rating_class.split('-')
             rating_value = int(rating_parts[1]) if len(rating_parts) > 1 and rating_parts[1].isdigit() else 0
@@ -50,19 +50,19 @@ def collect_user_rates(user_login):
 
     return data
 
-# Укажите логин пользователя здесь
-user_login_input = 'rfeldman9'  # замените на нужный логин
 
-# Собираем все фильмы пользователя
+user_login_input = 'rfeldman9'  # заменить на нужный логин
+
+
 user_rates = collect_user_rates(user_login=user_login_input)
 
-# Фильтруем фильмы за 2024 год
+
 films_2024 = [film for film in user_rates if '2024' in film['release_date']]
 
-# Сортируем по рейтингу по убыванию и берем топ-5
+
 top_5_films_2024 = sorted(films_2024, key=lambda x: x['rating'], reverse=True)[:5]
 
-# Выводим результаты
+
 for idx, film in enumerate(top_5_films_2024, start=1):
     print(f"{idx}. {film['film_name']} ({film['release_date']}) - Рейтинг: {film['rating']}")
 
